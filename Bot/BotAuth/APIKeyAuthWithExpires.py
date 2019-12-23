@@ -5,8 +5,8 @@ import hmac
 from future.builtins import bytes
 from urllib.parse import urlparse
 ###############################################################################
-def generate_expires():
-    return int(time.time() + 3600)
+def generate_nonce():
+    return int(round(time.time() + 3600))
 
 
 # Generates an API signature.

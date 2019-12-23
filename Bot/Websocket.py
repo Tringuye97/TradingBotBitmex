@@ -1,5 +1,6 @@
 from bitmex_websocket import BitMEXWebsocket 
 from time import sleep
+from RequestTest import place_order
 import logging
 ##############################
 
@@ -14,26 +15,28 @@ def run():
     # logger.info("Instrument data: %s" % ws.get_instrument())
 
     print("\n\n\n")
-
+    i = 0
     # Run forever
     while(ws.ws.sock.connected):
-        logger.info("Ticker: %s" % ws.get_tickerXBTUSD())
-        if ws.api_key:
-            logger.info("Funds: %s" % ws.funds())
-        logger.info("Positions: %s" % ws.positions())
-        logger.info("Orders: %s" % ws.open_orders())
+        
+        if len(ws.open_orders())==0:
+            place_order(Quantity=-int(ws.funds()['Wallet Balance']*ws.get_tickerXBTUSD()['Ask Price']), Price=ws.get_tickerXBTUSD()['Ask Price'])
+            place_order(Quantity=int(ws.funds()['Wallet Balance']*ws.get_tickerXBTUSD()['Ask Price']), Price=ws.get_tickerXBTUSD()['Bid Price'])
+            # place_order(Quantity=-368,Price=8400)
+            sleep(3)
+            
+        # if ws.api_key:
+        #     logger.info("Funds: %s" % ws.funds())
+        # logger.info("Positions: %s" % ws.positions())
         #   logger.info("Market Depth: %s" % ws.market_depth())
         #   logger.info("Recent Trades: %s\n\n" % ws.recent_trades())
-        print("\n")
-        sleep(5)
-
-    # logger.info("Ticker: %s" % ws.get_tickerXBTUSD())
-    # if ws.api_key:
-    #     logger.info("Funds: %s" % ws.funds())
-    # logger.info("Positions: %s" % ws.positions())
-    # logger.info("Orders: %s" % ws.open_orders())
-
-    print("\n\n\n\n")
+        i+=1
+        if i==500000:
+            logger.info("Ticker: %s" % ws.get_tickerXBTUSD())
+            for order in ws.open_orders():
+                logger.info("Orders: %s" % order)
+            print("\n\n\n")
+            i=0
 
 
 def setup_logger():

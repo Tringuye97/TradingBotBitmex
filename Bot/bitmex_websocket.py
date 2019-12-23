@@ -10,9 +10,9 @@ import requests
 
 import base64 
 import uuid 
-from BotAuth.APIKeyAuthWithExpires import APIKeyAuthWithExpires
+from BotAuth.APIKeyAuthWithExpires import APIKeyAuthWithExpires,generate_nonce, generate_signature
 
-from util.api_key import generate_nonce, generate_signature
+# from util.api_key import generate_nonce, generate_signature
 
 
 # Naive implementation of connecting to BitMEX websocket for streaming realtime data.
@@ -141,7 +141,20 @@ class BitMEXWebsocket:
         '''Get all your open orders.'''
         orders = self.data['order']
         # Filter to only open orders and those that we actually placed
-        return orders
+
+        order_list = []
+        
+        for order in orders:
+            order_detail = {
+                'Symbol' : order['symbol'],
+                'Quantity' : order['orderQty'],
+                'Price' : order['price'],
+                'Order Type' : order['ordType'],
+                'Side' : order['side'],
+            }
+            order_list.append(order_detail)
+
+        return order_list
 
 
 ####################################################################################################
