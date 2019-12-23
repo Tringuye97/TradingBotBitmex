@@ -20,19 +20,26 @@ def place_order(Quantity=None, Price=None):
     ###############LinkNguye API keys########
     # key = XLF0BPZb4AWiLFka2wF_hRqo
     # secret = LPJYu0LZ85uWt7_Fg8Jnvjp5olV6jLdI9VPqBTbEo5l0fOkW
+    ###############Vantringuyen97 API keys########
+    # key = i3Bzs7XfOBdgyDmuTHIsHeVZ
+    # secret = SJejr2P4y8BNzAyIV8xq2ckd1kVMgUK2-NmI3C3uwL01ryVb
 
-    api_key = 'OwLL1sNPTWOxelVnqAFcThEb'
-    api_secret = 'krFBRj0Lm2gShd8gH5JM9iPCM5u3dj-zTl5L80tH2fkVI-v3'
-    url = 'https://testnet.bitmex.com/api/v1/order'
+
+    api_key = 'i3Bzs7XfOBdgyDmuTHIsHeVZ'
+    api_secret = 'SJejr2P4y8BNzAyIV8xq2ckd1kVMgUK2-NmI3C3uwL01ryVb'
+    url = 'https://www.bitmex.com/api/v1/order'
 
 
     auth = APIKeyAuthWithExpires(api_key, api_secret)
 
-    response = requests.request('POST', url='https://testnet.bitmex.com/api/v1/order', json=jsoncontent, auth=auth)
+    response = requests.request('POST', url=url, json=jsoncontent, auth=auth)
 
     # response = requests.get(url, auth=auth)
 
-    # print(response.status_code)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
 
 
 # place_order(Quantity=368,Price=6400)
