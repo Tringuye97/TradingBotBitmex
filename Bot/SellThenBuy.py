@@ -14,7 +14,7 @@ def run():
 
     
     ContractQty = -1
-    PositionPrice = 0
+    PositionPrice = 7316.5
     CurrentBidPrice = 0
     CurrentAskPrice = 0
     currentState = ws.get_tickerXBTUSD()
@@ -38,7 +38,11 @@ def run():
         # Place Buy Order if there is a position and no active order
         # a = ws.open_orders()
         # print(len(a)) 
+        logger.info("Positions: %s" % ws.positions())
+        print(ContractQty)
+        print(ws.positions()['Quantity'])
         if ws.positions()['Quantity']==ContractQty and len(a)==0:
+            print('Placing Buy Order\n')
             CurrentBidPrice = ws.get_tickerXBTUSD()['Bid Price']      # Get current Bid Price
             if (CurrentBidPrice>=PositionPrice-0.5 and CurrentBidPrice<PositionPrice+168):     # PositionPrice-0.5<=CurrentBidPrice<PositionPrice+168 
                 place_order(Quantity=-ContractQty, Price=PositionPrice-0.5, api_key=api_key, api_secret=api_secret)
