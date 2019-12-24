@@ -4,7 +4,7 @@ import uuid
 # from util.api_key import generate_nonce, generate_signature
 from BotAuth.APIKeyAuthWithExpires import APIKeyAuthWithExpires
 ######### Making Order ##############
-def place_order(Quantity=None, Price=None):
+def place_order(Quantity=None, Price=None, api_key=None, api_secret=None):
     if Quantity==None:
         print('No order commanded.')
         return 
@@ -25,8 +25,8 @@ def place_order(Quantity=None, Price=None):
     # secret = SJejr2P4y8BNzAyIV8xq2ckd1kVMgUK2-NmI3C3uwL01ryVb
 
 
-    api_key = 'i3Bzs7XfOBdgyDmuTHIsHeVZ'
-    api_secret = 'SJejr2P4y8BNzAyIV8xq2ckd1kVMgUK2-NmI3C3uwL01ryVb'
+    # api_key = 'i3Bzs7XfOBdgyDmuTHIsHeVZ'
+    # api_secret = 'SJejr2P4y8BNzAyIV8xq2ckd1kVMgUK2-NmI3C3uwL01ryVb'
     url = 'https://www.bitmex.com/api/v1/order'
 
 
@@ -41,6 +41,15 @@ def place_order(Quantity=None, Price=None):
     else:
         return False
 
+def cancel_order(api_key=None, api_secret=None):
+    url = 'https://www.bitmex.com/api/v1/order/all'
+    auth = APIKeyAuthWithExpires(api_key, api_secret)
 
-# place_order(Quantity=368,Price=6400)
-# place_order(Quantity=-368,Price=8400)
+    response = requests.request('DELETE', url=url, auth=auth)
+
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+
+
