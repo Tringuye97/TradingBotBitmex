@@ -110,18 +110,18 @@ class BitMEXWebsocket:
     #     '''Get your positions.'''
     #     return self.data['position']
     def positions(self):
-        position = self.data['position'][0]
-        position = {
-            'Leverage' : position['leverage'],
-            'Cross Margin?' : position['crossMargin'],
-            'Quantity' : position['currentQty'],
-            'Entry Price' : position['avgEntryPrice'],
-            'Mark Price' : position['markPrice'],
-            'Unrealised PNL' : position['unrealisedPnl']/100000000.0,
-            'Position Margin' : position['posMargin']/100000000.0,
-            'Liq. Price' : position['liquidationPrice'],
-            'Bankrupt Price' : position['bankruptPrice'],
-        }
+        position = self.data['position']
+        # position = {
+        #     'Leverage' : position['leverage'],
+        #     'Cross Margin?' : position['crossMargin'],
+        #     'Quantity' : position['currentQty'],
+        #     'Entry Price' : position['avgEntryPrice'],
+        #     'Mark Price' : position['markPrice'],
+        #     'Unrealised PNL' : position['unrealisedPnl']/100000000.0,
+        #     'Position Margin' : position['posMargin']/100000000.0,
+        #     'Liq. Price' : position['liquidationPrice'],
+        #     'Bankrupt Price' : position['bankruptPrice'],
+        # }
         return position
 
 #############################################################################################
@@ -243,6 +243,9 @@ class BitMEXWebsocket:
             args = []
         self.ws.send(json.dumps({"op": command, "args": args}))
 
+    # def __on_message(self, message):
+    #     print(message)
+
     def __on_message(self, message):
         '''Handler for parsing WS messages.'''
         message = json.loads(message)
@@ -250,6 +253,7 @@ class BitMEXWebsocket:
 
         table = message.get("table")
         action = message.get("action")
+
         try:
             if 'subscribe' in message:
                 self.logger.debug("Subscribed to %s." % message['subscribe'])
@@ -313,21 +317,6 @@ class BitMEXWebsocket:
     def __on_close(self):
         '''Called on websocket close.'''
         self.logger.info('Websocket Closed')
-
-    def Interact(self, path, postdict=None, verb=None):
-        # Handle URL
-        url = self.url + path
-
-        if not verb:
-            verb = 'POST' if postdict else 'GET'
-
-        # Auth
-        auth = APIKeyAuthWithExpires(self.api_key, self.api_secret)
-
-        # Make request
-        self.logger.info("Sending request to %s: %s" % (url, json.dumps(postdict or query or '')))
-        req = requests.Request(verb, url, json=postdict, auth=auth)
-        print('\nJust placed order\n\n')
 
     def _curl_bitmex(self, path, query=None, postdict=None, timeout=None, verb=None, rethrow_errors=False,
                      max_retries=None):
